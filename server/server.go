@@ -19,13 +19,13 @@ type productPageImpl struct {
 }
 
 func NewProductPageImpl() *productPageImpl {
-	reviewConn, err := grpc.Dial("reviews:3000", grpc.WithInsecure())
+	reviewConn, err := grpc.Dial("localhost:3001", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf(err.Error())
 		return nil
 	}
 
-	detailConn, err := grpc.Dial("details:3000", grpc.WithInsecure())
+	detailConn, err := grpc.Dial("localhost:3002", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf(err.Error())
 		return nil
