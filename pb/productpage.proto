@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package pb;
+
+message Book {
+    string name = 1;
+}
+
+message Description {
+    int64 rating = 1;
+    int64 price = 2;
+    string review = 3;
+    string genre = 4;
+}
+
+service ProductPageService {
+    rpc product(Book) returns (Description) {};
+}
