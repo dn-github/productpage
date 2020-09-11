@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
@@ -11,10 +12,15 @@ import (
 )
 
 func main() {
-	conn, err := grpc.Dial("localhost:3000", grpc.WithInsecure())
+	fmt.Println("Enter QPS (0 for single run and exit): ")
+	var qps int
+	_, err := fmt.Scanf("%d", &qps)
+
+	conn, err := grpc.Dial("192.168.99.109:32053", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
+	defer conn.Close()
 	client := pb.NewProductPageServiceClient(conn)
 
 	req := &pb.Book{
@@ -24,9 +30,14 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)
 	defer cancel()
 
-	res, err := client.Product(ctx, req)
-	if err != nil {
-		log.Fatalf("error while calling gRPC: %v", err)
+	sleepTime := time.Second/time.Duration(qps)
+
+	for {
+		res, err := client.Product(ctx, req)
+		if err != nil {
+			log.Fatalf("error while calling gRPC: %v", err)
+		}
+		log.Printf("Response from Service: %v", res)
+		time.Sleep(sleepTime)
 	}
-	log.Printf("Response from Service: %v", res)
 }
