@@ -42,12 +42,14 @@ func (r *productPageImpl) Product(ctx context.Context, book *pb.Book) (*pb.Descr
 	review, rating, err := client.GetReviews(r.reviewClient, book.Name)
 	if err != nil {
 		log.Fatalf(err.Error())
-		return nil, err
+		review = "review service not available"
+		rating = 0
 	}
 	price, genre, err := client.GetDetails(r.detailClient, book.Name)
 	if err != nil {
 		log.Fatalf(err.Error())
-		return nil, err
+		price = 0
+		genre = "None"
 	}
 	logMessage := fmt.Sprintf("Book %s Review %s Rating %d Price %d Genre %s", book.Name, review, rating, price, genre)
 	log.Println(logMessage)
